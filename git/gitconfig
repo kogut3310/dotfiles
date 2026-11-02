@@ -1,0 +1,7 @@
+# Shared Git aliases. Loaded using include.path from ~/.gitconfig.
+[alias]
+    at = status
+    cm = commit -m
+    co = checkout
+    br = branch
+    lg = log --oneline --graph --decorate
