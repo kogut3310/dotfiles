@@ -1,27 +1,18 @@
-# Add the current Git branch to the interactive Bash prompt.
-# Retains the distribution's existing colors and other PS1 content.
+# Reproduce the preferred two-line, colored Bash prompt.
+# Green: user@host; magenta: working directory; red: Git branch.
 
 __dotfiles_git_branch_prompt() {
-    command -v git >/dev/null 2>&1 || return 0
-
     local branch
+
+    # Common case: Git branch name, with one Git invocation and no sed.
     if branch=$(git symbolic-ref --quiet --short HEAD 2>/dev/null); then
-        printf ' (%s)' "$branch"
+        printf '(%s)' "$branch"
+    # Detached HEAD: show the short commit hash rather than an empty branch.
     elif branch=$(git rev-parse --short HEAD 2>/dev/null); then
-        printf ' (detached:%s)' "$branch"
+        printf '(detached:%s)' "$branch"
     fi
 }
 
-# Avoid adding the same prompt substitution twice when Bash is reloaded.
-if [[ ${PS1-} == *'$(__dotfiles_git_branch_prompt)'* ]]; then
-    return 0
-fi
-
-# Ubuntu's default prompt ends with \$ followed by a space.
-# Insert the branch before the prompt symbol. For custom prompts,
-# show the branch as a prefix instead of replacing their formatting.
-if [[ ${PS1-} == *'\$ '* ]]; then
-    PS1=${PS1/'\$ '/'$(__dotfiles_git_branch_prompt)\$ '}
-else
-    PS1='$( __dotfiles_git_branch_prompt )'"${PS1-}"
-fi
+# \[...\] marks non-printing ANSI sequences for proper readline wrapping.
+# Terminal title: current directory; two-line prompt and literal '$' preserved.
+PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\h \[\e[35m\]\w \[\e[31m\]$(__dotfiles_git_branch_prompt)\[\e[0m\]\n$ '

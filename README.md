@@ -11,7 +11,8 @@ This repository keeps custom settings separate from distribution-managed startup
 | `bash/init.sh` | Loads the interactive Bash configuration. |
 | `bash/aliases.sh` | Bash aliases (`..`, `...`). |
 | `bash/functions.sh` | Helpers such as `mkcd` and `croot`. |
-| `bash/prompt.sh` | Adds the Git branch to the existing Bash prompt. |
+| `bash/colors.sh` | Sets magenta (`di=0;35`) for directories in GNU `ls`. |
+| `bash/prompt.sh` | Configures the colored, two-line prompt with Git branch. |
 | `git/gitconfig` | Portable Git command aliases. |
 | `install.sh` | Installs safe references without replacing existing config files. |
 
@@ -53,10 +54,33 @@ croot                 # go to the root of the current Git worktree
 ...                   # two directories up
 ```
 
-The prompt shows the current Git branch, e.g. `user@host:~/dotfiles (main)$`, and hides the extra text outside Git repositories. Detached HEAD states are shown by their abbreviated commit SHA. Existing Ubuntu prompt colors are preserved.
+## Prompt colors and Git branch
+
+`bash/prompt.sh` deliberately replaces the default `PS1` with the preferred two-line layout:
+
+```text
+user@host ~/dotfiles (main)
+$ 
+```
+
+- Green (`32`): user and hostname.
+- Magenta (`35`): working directory.
+- Red (`31`): current Git branch, shown as `(main)`.
+- Reset (`0`) before the second line, containing a literal `$`.
+- The terminal window title is set to the working directory.
+
+The branch function uses `git symbolic-ref --quiet --short HEAD` instead of piping `git branch` through `sed`, reducing overhead in a normal Git repository. It uses `git rev-parse --short HEAD` as a fallback for detached HEAD (displayed as `(detached:abc1234)`). Outside a Git repository, the branch segment is empty.
+
+## Directory colors
+
+`bash/colors.sh` appends `di=0;35:` to `LS_COLORS`, overriding the usual blue directories with magenta for better contrast on dark terminal themes. It checks whether the final entry already matches, avoiding duplicate entries when `~/.bashrc` is reloaded. All other existing `LS_COLORS` entries are preserved.
+
+The setting applies when GNU `ls` is invoked with coloring enabled, for example `ls --color=auto`. Ubuntu typically enables this using a shell alias in `.bashrc`.
 
 ## Customization
 
-Edit `bash/aliases.sh`, `bash/functions.sh`, `bash/prompt.sh` or `git/gitconfig` and commit your changes. Reopen your terminal (or `source ~/.bashrc`) to reload Bash files. Changes to included Git aliases are available to the next Git invocation.
+Edit the scripts under `bash/` or `git/gitconfig` and commit your changes. Reopen your terminal (or `source ~/.bashrc`) to reload Bash files. Changes to included Git aliases are available to the next Git invocation.
 
-Do not commit credentials, API keys, machine-specific secrets or sensitive environment variables to this repository.
+If you previously hard-coded a `PS1` or `LS_COLORS` override directly in `~/.bashrc`, consider deleting the redundant lines after confirming the new configuration is active.
+
+Do not commit credentials, API keys, machine-specific secrets or sensitive environment variables to this public repository.
