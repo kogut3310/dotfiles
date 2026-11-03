@@ -1,7 +1,15 @@
-# Shared Git aliases. Loaded using include.path from ~/.gitconfig.
 [alias]
-    at = status
-    cm = commit -m
-    co = checkout
-    br = branch
-    lg = log --oneline --graph --decorate
+	st = status -sb
+	cm = commit -m
+	ss = status --short --branch
+	ls = log --pretty=format:\"%C(green)%h\\\\ %C(yellow)[%ad]%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate --date=relative
+	ld = log --pretty=format:\"%C(yellow)%h\\\\ %C(green)%ad%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate --date=short --graph
+	ll = log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate --numstat
+	lg = "log --graph --abbrev-commit --decorate --format=format:'%C(#62c1a1)%h%C(reset) - %C(#a5c261)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all"
+	last = log -1 HEAD --stat
+	dv = difftool -t vimdiff -y
+	se = !git rev-list --all | xargs git grep -F
+	undo = reset --soft HEAD^
+	p = push
+	d = diff
+	a = add .
