@@ -1,15 +1,45 @@
+# Shared Git aliases. Loaded using include.path from ~/.gitconfig.
 [alias]
-	st = status -sb
-	cm = commit -m
-	ss = status --short --branch
-	ls = log --pretty=format:\"%C(green)%h\\\\ %C(yellow)[%ad]%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate --date=relative
-	ld = log --pretty=format:\"%C(yellow)%h\\\\ %C(green)%ad%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate --date=short --graph
-	ll = log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate --numstat
-	lg = "log --graph --abbrev-commit --decorate --format=format:'%C(#62c1a1)%h%C(reset) - %C(#a5c261)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all"
-	last = log -1 HEAD --stat
-	dv = difftool -t vimdiff -y
-	se = !git rev-list --all | xargs git grep -F
-	undo = reset --soft HEAD^
-	p = push
-	d = diff
-	a = add .
+    # Status
+    at = status
+    st = status -sb
+
+    # Commit
+    cm = commit -m
+    amend = commit --amend --no-edit
+    undo = reset --soft HEAD^
+
+    # Stage
+    a = add .
+    aa = add -A
+    ap = add -p
+    unstage = restore --staged --
+
+    # Diff
+    d = diff
+    ds = diff --staged
+    dv = difftool -t vimdiff -y
+
+    # Branch
+    br = branch
+    co = checkout
+    sw = switch
+    swc = switch -c
+
+    # Remote
+    p = push
+    f = fetch --all --prune
+    ff = pull --ff-only
+
+    # History
+    ls = "log --decorate --date=relative --pretty=format:'%C(green)%h %C(yellow)[%ad]%C(red)%d%C(reset) %s %C(blue)[%cn]%C(reset)'"
+    ld = "log --graph --decorate --date=short --pretty=format:'%C(yellow)%h %C(green)%ad%C(red)%d%C(reset) %s %C(blue)[%cn]%C(reset)'"
+    ll = "log --decorate --numstat --pretty=format:'%C(yellow)%h%C(red)%d%C(reset) %s %C(blue)[%cn]%C(reset)'"
+    lg = "log --graph --abbrev-commit --decorate --format=format:'%C(#62c1a1)%h%C(reset) - %C(#a5c261)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all"
+    last = log -1 HEAD --stat
+
+    # Search history (pickaxe): changes in occurrences (-S) or matching lines (-G)
+    se = log --all --oneline -S
+    sg = log --all --oneline -G
+    # Original historical file-content search (costly on large repositories).
+    histgrep = !git rev-list --all | xargs git grep -F
